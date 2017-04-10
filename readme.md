@@ -1,4 +1,5 @@
 ## WPAdminPageRender Class
+```
 /**
  * Class Name: WPAdminPageRender
  * Class URI: https://github.com/nikolays93/WPAdminPageRender
@@ -7,6 +8,7 @@
  * Author: NikolayS93
  * Author URI: https://vk.com/nikolays_93
  */
+```
 
 ### How to use: ###
 ```php
