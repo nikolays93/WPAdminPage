@@ -1,5 +1,12 @@
-## WPAdminPageRender
-Create a new custom admin page.
+## WPAdminPageRender Class
+/**
+ * Class Name: WPAdminPageRender
+ * Class URI: https://github.com/nikolays93/WPAdminPageRender
+ * Description: Create a new custom admin page.
+ * Version: 1.0
+ * Author: NikolayS93
+ * Author URI: https://vk.com/nikolays_93
+ */
 
 ### How to use: ###
 ```php
