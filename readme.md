@@ -42,7 +42,9 @@ function validate_callback( $post_content ){
 // set 2 columns on page
 add_filter( $page_slug . '_columns', function(){return 2;} );
 
-$page->add_metabox( $handle*, $label*, $render_cb*, $position = 'normal', $priority = 'high')
+$page->add_metabox( $handle*, $label*, $render_cb*, $position = 'normal', $priority = 'high');
+..
+$page->set_metaboxes();
 ```
 \* \- required (dont forget remove stars)
 
