@@ -1,5 +1,5 @@
 <?php
-
+namespace RQ;
 /**
  * Class Name: WPAdminPageRender
  * Class URI: https://github.com/nikolays93/classes.git
@@ -240,7 +240,7 @@ class WPAdminPageRender
 		// $debug['before'] = $inputs;
 
 		$inputs = array_map_recursive( 'sanitize_text_field', $inputs );
-		$inputs = array_filter($inputs);
+		$inputs = array_filter_recursive($inputs);
 
 		// $debug['after'] = $inputs;
 		// file_put_contents(__DIR__.'/valid.log', print_r($debug, 1));
@@ -249,6 +249,14 @@ class WPAdminPageRender
 	}
 }
 
+function array_filter_recursive($input){
+	foreach ($input as &$value) {
+		if ( is_array($value) )
+			$value = array_filter_recursive($value);
+	}
+
+	return array_filter($input);
+}
 function array_map_recursive($callback, $array){
 	$func = function ($item) use (&$func, &$callback) {
 		return is_array($item) ? array_map($func, $item) : call_user_func($callback, $item);
