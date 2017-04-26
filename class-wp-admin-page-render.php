@@ -1,5 +1,5 @@
 <?php
-namespace RQ;
+namespace DTSettings;
 /**
  * Class Name: WPAdminPageRender
  * Class URI: https://github.com/nikolays93/classes.git
@@ -149,7 +149,7 @@ class WPAdminPageRender
 			
 			<?php do_action( $this->page . '_after_title'); ?>
 
-			<form id="ccpt" enctype="multipart/form-data" action="options.php" method="post">  
+			<form id="options" enctype="multipart/form-data" action="options.php" method="post">  
 				<?php do_action( $this->page . '_before_form_inputs'); ?>
 				<?php
 				/* Used to save closed metaboxes and their order */
