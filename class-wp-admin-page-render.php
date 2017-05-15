@@ -37,11 +37,9 @@ class WPAdminPageRender
 		$this->page = $page_slug;
 		if( is_array( $args ) )
 			$this->args = array_merge( $this->args, $args );
+
 		$this->page_content_cb = $page_content_cb;
-		if( $option_name )
-			$this->option_name = $option_name;
-		else
-			$this->option_name = $this->page;
+		$this->option_name = ( $option_name ) ? $option_name : $this->page;
 		$this->page_valid_cb = ($valid_cb) ? $valid_cb : array($this, 'validate_options');
 
 		add_action('admin_menu', array($this,'add_page'));
