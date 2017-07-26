@@ -1,18 +1,44 @@
 <?php
-namespace DTSettings;
+
 /**
  * Class Name: WPAdminPageRender
  * Class URI: https://github.com/nikolays93/classes.git
  * Description: Create a new custom admin page.
- * Version: 1.1
+ * Version: 1.2
  * Author: NikolayS93
  * Author URI: https://vk.com/nikolays_93
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+if ( !function_exists('array_filter_recursive') ) {
+	function array_filter_recursive($input){
+		foreach ($input as &$value) {
+			if ( is_array($value) )
+				$value = array_filter_recursive($value);
+		}
+
+		return array_filter($input);
+	}
+}
+
+if ( !function_exists('array_map_recursive') ) {
+	function array_map_recursive($callback, $array){
+		$func = function ($item) use (&$func, &$callback) {
+			return is_array($item) ? array_map($func, $item) : call_user_func($callback, $item);
+		};
+
+		return array_map($func, $array);
+	}
+}
+
+if( class_exists('WPAdminPageRender') )
+	return;
+
 class WPAdminPageRender
 {
+	const ver = '1.2';
+
 	public $page = '';
 	public $screen = '';
 	public $option_name = '';
@@ -48,7 +74,7 @@ class WPAdminPageRender
 
 	/**
 	 * Add page wordpress handle
-	 * 
+	 *
 	 * @see wordpress codex : add_submenu_page()
 	 */
 	function add_page(){
@@ -84,7 +110,7 @@ class WPAdminPageRender
 	function set_metaboxes(){
 		add_action( 'add_meta_boxes', array($this, '_metabox') );
 	}
-	
+
 
 	/**
 	 * Init actions for created page
@@ -93,7 +119,7 @@ class WPAdminPageRender
 		add_action( $this->page . '_inside_page_content', array($this, 'page_render'), 10);
 
 		add_action( $this->page . '_inside_side_container', array($this, 'side_render'), 10 );
-		
+
 		add_action( $this->page . '_inside_normal_container', array($this, 'normal_render'), 10 );
 		add_action( $this->page . '_inside_advanced_container', array($this, 'advanced_render'), 10 );
 
@@ -121,13 +147,13 @@ class WPAdminPageRender
 	}
 
 	function footer_scripts(){
-		
+
 		echo "<script> jQuery(document).ready(function($){ postboxes.add_postbox_toggles(pagenow); });</script>";
 	}
 
 	/**
 	 * View html on added page
-	 * 
+	 *
 	 * @has_hooks:
 	 * $pageslug . _after_title (default empty hook)
 	 * $pageslug . _before_form_inputs (default empty hook)
@@ -148,7 +174,7 @@ class WPAdminPageRender
 
 			<?php screen_icon(); ?>
 			<h2> <?php echo esc_html($this->args['title']);?> </h2>
-			
+
 			<?php do_action( $this->page . '_after_title'); ?>
 
 			<?php
@@ -161,7 +187,7 @@ class WPAdminPageRender
 
 				<div id="poststuff">
 
-					<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>"> 
+					<div id="post-body" class="metabox-holder columns-<?php echo 1 == get_current_screen()->get_columns() ? '1' : '2'; ?>">
 
 						<div id="post-body-content">
 							<?php
@@ -172,7 +198,7 @@ class WPAdminPageRender
 							 */
 							do_action( $this->page . '_inside_page_content');
 							?>
-						</div>    
+						</div>
 
 						<div id="postbox-container-1" class="postbox-container side-container">
 							<?php
@@ -183,7 +209,7 @@ class WPAdminPageRender
 							 */
 							do_action( $this->page . '_inside_side_container');
 							?>
-						</div>    
+						</div>
 
 						<div id="postbox-container-2" class="postbox-container normal-container">
 							<?php
@@ -194,7 +220,7 @@ class WPAdminPageRender
 							 */
 							do_action( $this->page . '_inside_normal_container');
 							?>
-						</div>	
+						</div>
 						<div id="postbox-container-3" class="postbox-container advanced-container">
 							<?php
 							/**
@@ -204,8 +230,8 @@ class WPAdminPageRender
 							 */
 							do_action( $this->page . '_inside_advanced_container');
 							?>
-						</div>     					
-						
+						</div>
+
 					</div> <!-- #post-body -->
 				</div> <!-- #poststuff -->
 
@@ -222,11 +248,11 @@ class WPAdminPageRender
 			</form>
 
 		</div><!-- .wrap -->
-		
+
 		<div class="clear" style="clear: both;"></div>
 
 		<?php do_action( $this->page . '_after_page_wrap'); ?>
-		
+
 		<?php
 	}
 
@@ -239,7 +265,7 @@ class WPAdminPageRender
 	}
 	/**
 	 * Validate registred options
-	 * 
+	 *
 	 * @param  _POST $inputs post data for update
 	 * @return array $inputs filtred data for save
 	 */
@@ -255,20 +281,4 @@ class WPAdminPageRender
 
 		return $inputs;
 	}
-}
-
-function array_filter_recursive($input){
-	foreach ($input as &$value) {
-		if ( is_array($value) )
-			$value = array_filter_recursive($value);
-	}
-
-	return array_filter($input);
-}
-function array_map_recursive($callback, $array){
-	$func = function ($item) use (&$func, &$callback) {
-		return is_array($item) ? array_map($func, $item) : call_user_func($callback, $item);
-	};
-
-	return array_map($func, $array);
 }
