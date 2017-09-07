@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Class Name: WPAdminPageRender
- * Class URI: https://github.com/nikolays93/classes.git
+ * Class Name: WP_Admin_Page
+ * Class URI: https://github.com/nikolays93/WPAdminPage
  * Description: Create a new custom admin page.
- * Version: 2.0
+ * Version: 2.1
  * Author: NikolayS93
  * Author URI: https://vk.com/nikolays_93
  * License: GNU General Public License v2 or later
@@ -32,48 +32,59 @@ if ( !function_exists('array_map_recursive') ) {
 	}
 }
 
-if( class_exists('WPAdminPageRender') )
-	return;
-
-class WPAdminPageRender
+if( ! class_exists('WP_Admin_Page') ) :
+class WP_Admin_Page
 {
-	const ver = '2.0';
-
+	/**
+	 * @todo : add method set title
+	 * @todo : add method set columns
+	 * @todo : add method set menuname
+	 * @todo : add method set menuname
+	 * @todo : add method set callback
+	 */
 	public $page = '';
 	public $screen = '';
 	public $option_name = '';
 	public $tab_sections = array();
 
-	protected $args = array(
-		'parent'      => 'options-general.php',
-		'title'       => '',
-		'menu'        => 'Test page',
-		'permissions' => 'manage_options',
-		'tab_sections'=> null,
-		);
+	protected $args;
 	protected $page_content_cb = '';
 	protected $page_valid_cb = '';
 
 	protected $metaboxes = array();
 
-	function __construct( $page_slug, $args, $page_content_cb, $option_name = false, $valid_cb = false ){
+	function __construct() {}
+	function add_page( $page_slug, $args, $page_content_cb, $option_name = false, $valid_cb = false ){
 		// slug required
 		if( !$page_slug )
 			wp_die( 'You have false slug in admin page class', 'Slug is false or empty' );
 
 		$this->page = $page_slug;
-		if( is_array( $args ) )
-			$this->args = array_merge( $this->args, $args );
-
-		if(!empty($this->args['tab_sections']))
-			$this->tab_sections = $this->args['tab_sections'];
+		$this->args = wp_parse_args( $args, array(
+			'parent'      => 'options-general.php',
+			'title'       => '',
+			'menu'        => 'Test page',
+			'permissions' => 'manage_options',
+			'tab_sections'=> null,
+			) );
 
 		$this->page_content_cb = $page_content_cb;
 		$this->option_name = ( $option_name ) ? $option_name : $this->page;
 		$this->page_valid_cb = ($valid_cb) ? $valid_cb : array($this, 'validate_options');
 
-		add_action('admin_menu', array($this,'add_page'));
+		add_action('admin_menu', array($this,'_add_page'));
 		add_action('admin_init', array($this,'register_option_page'));
+	}
+
+	static function ajax_answer( $message, $result = 0, $args = array() ) {
+		$answer = wp_parse_args( $args, array(
+			'result' => $result,
+			'message' => $message,
+			'count' => 0,
+			) );
+
+		echo json_encode( $answer );
+		wp_die();
 	}
 
 	/**
@@ -81,7 +92,7 @@ class WPAdminPageRender
 	 *
 	 * @see wordpress codex : add_submenu_page()
 	 */
-	function add_page(){
+	function _add_page(){
 		$this->screen = add_submenu_page(
 			$this->args['parent'],
 			$this->args['title'],
@@ -248,7 +259,7 @@ class WPAdminPageRender
 							/**
 							 * $page_slug . _inside_page_content hook.
 							 *
-							 * @hooked array('WPAdminPageRender', 'page_render') - 10
+							 * @hooked array('WPAdminPage', 'page_render') - 10
 							 */
 							do_action( $this->page . '_inside_page_content');
 							?>
@@ -259,7 +270,7 @@ class WPAdminPageRender
 							/**
 							 * $page_slug . _inside_side_container hook.
 							 *
-							 * @hooked array('WPAdminPageRender', 'side_render') - 10
+							 * @hooked array('WPAdminPage', 'side_render') - 10
 							 */
 							do_action( $this->page . '_inside_side_container');
 							?>
@@ -270,7 +281,7 @@ class WPAdminPageRender
 							/**
 							 * $page_slug . _inside_normal_container hook.
 							 *
-							 * @hooked array('WPAdminPageRender', 'normal_render') - 10
+							 * @hooked array('WPAdminPage', 'normal_render') - 10
 							 */
 							do_action( $this->page . '_inside_normal_container');
 							?>
@@ -280,7 +291,7 @@ class WPAdminPageRender
 							/**
 							 * $page_slug . _inside_advanced_container hook.
 							 *
-							 * @hooked array('WPAdminPageRender', 'advanced_render') - 10
+							 * @hooked array('WPAdminPage', 'advanced_render') - 10
 							 */
 							do_action( $this->page . '_inside_advanced_container');
 							?>
@@ -336,3 +347,4 @@ class WPAdminPageRender
 		return $inputs;
 	}
 }
+endif;
