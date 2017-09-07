@@ -1,52 +1,27 @@
-## WPAdminPageRender Class
+## WPAdminPage Class
 ```
 /**
- * Class Name: WPAdminPageRender
- * Class URI: https://github.com/nikolays93/WPAdminPageRender
+ * Class Name: WP_Admin_Page
+ * Class URI: https://github.com/nikolays93/WPAdminPage
  * Description: Create a new custom admin page.
- * Version: 1.0
  * Author: NikolayS93
  * Author URI: https://vk.com/nikolays_93
+ * License: GNU General Public License v2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 ```
 
 ### How to use: ###
-```php
-$page_slug = 'page_name';
-$args = array(
-    'parent' => 'options-general.php',
-    'title' => __('Test Page h1 Title','domain'), // default: ''
-    'menu' => __('Test page','domain'),
-    'permissions' => 'manage_options'
-    );
-$option_name = 'custom_option';
-
-$page = new WPAdminPageRender( $page_slug*, $args*, 'page_body'*, $option_name, 'validate_callback' );
-
-function page_body(){
-    echo 'TEST PAGE';
-}
-function validate_callback( $post_content ){
-    $post_content = array_filter($post_content);
-    return $post_content;
-}
-```
-\* \- required (dont forget remove stars)
-
-- use $args as array() for defaults;
-- $option_name = string ( will set page_slug is default )
-- validate_callback = string - callback function name for validate ( has default callback )
+@see example.php
 
 ### Metaboxes: ###
 ```php
 // set 2 columns on page
-add_filter( $page_slug . '_columns', function(){return 2;} );
 
-$page->add_metabox( $handle*, $label*, $render_cb*, $position = 'normal', $priority = 'high');
+$page->add_metabox( $handle = 'req', $label = 'req', $render_cb = 'req', $position = 'normal', $priority = 'high');
 ..
 $page->set_metaboxes();
 ```
-\* \- required (dont forget remove stars)
 
 ### used hooks: ###
      * $pageslug . _after_title (default empty hook)
@@ -56,6 +31,3 @@ $page->set_metaboxes();
      * $pageslug . _inside_advanced_container
      * $pageslug . _after_form_inputs (default empty hook)
      * $pageslug . _after_page_wrap (default empty hook)
-
-### todo: ###
-- add support - create MAIN menu (parent, not child\sub )

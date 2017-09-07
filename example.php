@@ -1,22 +1,28 @@
 <?php
 
-class NewModernPage extends WP_Admin_Page
+require 'class-wp-admin-page.php';
+
+class NewModernPage
 {
     const PAGE = 'pagename';
 
     function __construct()
     {
-        $this->add_page( PAGE, array(
-            'parent' => 'options-general.php',
-            'title' => __('New Modern Page'),
-            'menu' => __('Modern Page'),
-            ),
-        array($this, 'page_render')
-        );
+        $page = new WP_Admin_Page();
+        $page->set_args( PAGE, array(
+            'parent'      => 'options-general.php',
+            'title'       => '',
+            'menu'        => 'New Modern Page',
+            'callback'    => array($this, 'not_set_callback'),
+            'validate'    => array($this, 'validate_options'),
+            'permissions' => 'manage_options',
+            'tab_sections'=> null,
+            'columns'     => 2,
+            ) );
 
-        $this->add_metabox( 'metabox1', 'metabox1', array($this, 'metabox1_callback'), $position = 'normal');
-        $this->add_metabox( 'metabox2', 'metabox2', array($this, 'metabox2_callback'), $position = 'normal');
-        $this->set_metaboxes();
+        $page->add_metabox( 'metabox1', 'metabox1', array($this, 'metabox1_callback'), $position = 'normal');
+        $page->add_metabox( 'metabox2', 'metabox2', array($this, 'metabox2_callback'), $position = 'side');
+        $page->set_metaboxes();
     }
     /**
      * Основное содержимое страницы
